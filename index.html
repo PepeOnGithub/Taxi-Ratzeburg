@@ -27,7 +27,8 @@
                             bg: '#0f172a',
                             surface: '#1e293b',
                             glass: 'rgba(30, 41, 59, 0.7)'
-                        }
+                        },
+                        whatsapp: '#25D366'
                     },
                     backgroundImage: {
                         'radial-dark': 'radial-gradient(circle at center top, #1e293b 0%, #020617 100%)',
@@ -145,9 +146,9 @@
                 </div>
 
                 <div class="flex gap-4">
-                    <button onclick="openBookingModal()" class="btn-taxi px-6 py-2.5 rounded-full text-sm shadow-lg hidden sm:block">
-                        <i class="fa-regular fa-calendar-check mr-2"></i>Vorbestellen
-                    </button>
+                    <a href="https://wa.me/4915565578615?text=Hallo%2C%20ich%20m%C3%B6chte%20gerne%20ein%20Taxi%20bestellen." target="_blank" class="bg-[#25D366] hover:bg-[#1fa851] text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg hidden sm:flex items-center transition-all">
+                        <i class="fa-brands fa-whatsapp mr-2 text-lg"></i>WhatsApp
+                    </a>
                     <div class="-mr-2 flex md:hidden">
                         <button onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-white/10 focus:outline-none">
                             <i class="fa-solid fa-bars text-xl"></i>
@@ -163,9 +164,9 @@
                 <a href="#areas" class="text-gray-300 hover:text-taxi block px-3 py-2 rounded-md text-base font-medium">Gebiete</a>
                 <a href="#tariffs" class="text-gray-300 hover:text-taxi block px-3 py-2 rounded-md text-base font-medium">Tarife</a>
                 <a href="#contact" class="text-gray-300 hover:text-taxi block px-3 py-2 rounded-md text-base font-medium">Kontakt</a>
-                <button onclick="openBookingModal()" class="w-full text-left bg-taxi/20 text-taxi block px-3 py-2 rounded-md text-base font-bold mt-4 border border-taxi/30">
-                    <i class="fa-regular fa-calendar-check mr-2"></i>Jetzt Vorbestellen
-                </button>
+                <a href="https://wa.me/4915565578615?text=Hallo%2C%20ich%20m%C3%B6chte%20gerne%20ein%20Taxi%20bestellen." target="_blank" class="w-full text-left bg-[#25D366]/20 text-[#25D366] block px-3 py-2 rounded-md text-base font-bold mt-4 border border-[#25D366]/30">
+                    <i class="fa-brands fa-whatsapp mr-2"></i>Per WhatsApp bestellen
+                </a>
             </div>
         </div>
     </nav>
@@ -191,10 +192,10 @@
                         <i class="fa-solid fa-phone-volume"></i>
                         01556 5578615
                     </a>
-                    <button onclick="openBookingModal()" class="px-8 py-4 rounded-full text-lg font-bold text-white glass-panel hover:bg-white/10 transition-all border border-white/20 w-full sm:w-auto min-w-[200px] flex items-center justify-center gap-3">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        Online Buchen
-                    </button>
+                    <a href="https://wa.me/4915565578615?text=Hallo%2C%20ich%20m%C3%B6chte%20gerne%20ein%20Taxi%20bestellen." target="_blank" class="px-8 py-4 rounded-full text-lg font-bold text-white glass-panel hover:bg-[#25D366]/20 transition-all border border-white/20 w-full sm:w-auto min-w-[200px] flex items-center justify-center gap-3 group">
+                        <i class="fa-brands fa-whatsapp text-[#25D366] group-hover:text-white transition-colors"></i>
+                        WhatsApp Buchung
+                    </a>
                 </div>
             </div>
         </section>
@@ -399,83 +400,6 @@
         </button>
     </div>
 
-    <div id="booking-modal" class="fixed inset-0 z-[60] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="booking-backdrop"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-2xl glass-panel text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" id="booking-panel">
-                    <div class="bg-gradient-to-r from-taxi to-yellow-400 p-4 flex justify-between items-center">
-                        <h3 class="text-lg font-bold text-black flex items-center gap-2">
-                            <i class="fa-solid fa-calendar-check"></i> Fahrt Vorbestellen
-                        </h3>
-                        <button onclick="closeBookingModal()" class="text-black/70 hover:text-black">
-                            <i class="fa-solid fa-xmark text-xl"></i>
-                        </button>
-                    </div>
-                    <form id="booking-form" onsubmit="handleBooking(event)" class="p-6 space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="col-span-2">
-                                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Name</label>
-                                <input type="text" required class="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-taxi focus:ring-1 focus:ring-taxi outline-none transition-colors" placeholder="Ihr Name">
-                            </div>
-                            <div class="col-span-2">
-                                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Telefon</label>
-                                <input type="tel" required class="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-taxi focus:ring-1 focus:ring-taxi outline-none transition-colors" placeholder="Rückrufnummer">
-                            </div>
-                            <div class="col-span-1">
-                                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Datum</label>
-                                <input type="date" required class="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-taxi focus:ring-1 focus:ring-taxi outline-none transition-colors [color-scheme:dark]">
-                            </div>
-                            <div class="col-span-1">
-                                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Uhrzeit</label>
-                                <input type="time" required class="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-taxi focus:ring-1 focus:ring-taxi outline-none transition-colors [color-scheme:dark]">
-                            </div>
-                            <div class="col-span-2">
-                                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Start</label>
-                                <div class="relative">
-                                    <i class="fa-solid fa-location-dot absolute left-3 top-3 text-gray-500"></i>
-                                    <input type="text" required class="w-full bg-black/30 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:border-taxi focus:ring-1 focus:ring-taxi outline-none transition-colors" placeholder="Abholadresse">
-                                </div>
-                            </div>
-                            <div class="col-span-2">
-                                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Ziel</label>
-                                <div class="relative">
-                                    <i class="fa-solid fa-flag-checkered absolute left-3 top-3 text-gray-500"></i>
-                                    <input type="text" required class="w-full bg-black/30 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:border-taxi focus:ring-1 focus:ring-taxi outline-none transition-colors" placeholder="Zieladresse">
-                                </div>
-                            </div>
-                            <div class="col-span-2">
-                                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Fahrtart</label>
-                                <select class="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-taxi focus:ring-1 focus:ring-taxi outline-none transition-colors">
-                                    <option>Standard Taxi (1-4 Pers.)</option>
-                                    <option>Großraumtaxi (5-8 Pers.)</option>
-                                    <option>Krankenfahrt</option>
-                                    <option>Flughafentransfer</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="mt-6">
-                            <button type="submit" class="w-full btn-taxi py-3 rounded-lg font-bold shadow-lg">
-                                Kostenpflichtig Bestellen
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <div id="booking-success" class="hidden absolute inset-0 bg-[#1e293b] flex flex-col items-center justify-center text-center p-8 z-20">
-                        <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-                            <i class="fa-solid fa-check text-4xl text-green-500"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Anfrage Gesendet!</h3>
-                        <p class="text-gray-400 mb-6">Wir haben Ihre Anfrage erhalten. Wir bestätigen die Fahrt in Kürze telefonisch oder per SMS.</p>
-                        <button onclick="closeBookingModal()" class="px-6 py-2 border border-white/20 rounded-full text-white hover:bg-white/10 transition-colors">
-                            Schließen
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="chat-modal" class="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] h-[500px] glass-panel rounded-2xl shadow-2xl flex flex-col z-50 transform translate-y-[120%] transition-transform duration-300 border border-white/10 overflow-hidden">
         <div class="bg-slate-900/90 p-4 border-b border-white/10 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -520,56 +444,6 @@
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
-        }
-
-        function openBookingModal() {
-            const modal = document.getElementById('booking-modal');
-            const backdrop = document.getElementById('booking-backdrop');
-            const panel = document.getElementById('booking-panel');
-            const form = document.getElementById('booking-form');
-            const success = document.getElementById('booking-success');
-            
-            form.reset();
-            form.style.display = 'block';
-            success.classList.add('hidden');
-            
-            modal.classList.remove('hidden');
-            
-            requestAnimationFrame(() => {
-                backdrop.classList.remove('opacity-0');
-                panel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-                panel.classList.add('sm:scale-100', 'translate-y-0');
-            });
-        }
-
-        function closeBookingModal() {
-            const modal = document.getElementById('booking-modal');
-            const backdrop = document.getElementById('booking-backdrop');
-            const panel = document.getElementById('booking-panel');
-            
-            backdrop.classList.add('opacity-0');
-            panel.classList.remove('sm:scale-100', 'translate-y-0');
-            panel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-            
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        function handleBooking(e) {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            const originalText = btn.innerHTML;
-            
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sende...';
-
-            setTimeout(() => {
-                document.getElementById('booking-form').style.display = 'none';
-                document.getElementById('booking-success').classList.remove('hidden');
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }, 1500);
         }
 
         let isChatOpen = false;
@@ -650,7 +524,6 @@
 
         async function callGeminiAPI(userMessage) {
             if (!apiKey) {
-                // Mock response if no API key is set in environment
                 return new Promise(resolve => setTimeout(() => resolve("Da kein API-Key konfiguriert ist, simuliere ich eine Antwort: Wir bieten Krankenfahrten, Großraumtaxi und mehr. Rufen Sie uns unter 01556 5578615 an!"), 1000));
             }
 
@@ -697,4 +570,5 @@
     </script>
 </body>
 </html>
+
 
