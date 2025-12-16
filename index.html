@@ -396,7 +396,7 @@
 
         <button onclick="toggleChat()" class="pointer-events-auto w-16 h-16 bg-taxi hover:bg-[#ffe033] text-black rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,217,0,0.5)] transform hover:scale-105 transition-all duration-300 group relative">
             <i class="fa-solid fa-robot text-2xl animate-bounce-slow"></i>
-            <span class="absolute right-0 top-0 w-4 h-4 bg-red-500 rounded-full border-2 border-black"></span>
+            <!-- Removed the red dot for unread messages for simplicity -->
         </button>
     </div>
 
@@ -420,11 +420,11 @@
         </div>
         
         <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-black/20">
+            <!-- Initial Message without timestamp -->
             <div class="flex flex-col items-start max-w-[85%] animate-fade-in-up">
                 <div class="chat-bubble-ai p-3 rounded-2xl text-sm leading-relaxed shadow-sm">
                     Hallo! 👋 Ich bin der digitale Assistent von Taxi Ratzeburg. Wie kann ich Ihnen helfen? Ich kenne unsere Tarife, Leistungen und kann bei der Buchung helfen.
                 </div>
-                <span class="text-[10px] text-gray-500 mt-1 ml-2">Just now</span>
             </div>
         </div>
 
@@ -440,6 +440,29 @@
 
     <script>
         const apiKey = ""; 
+
+        // Define the core data structure used by the assistant
+        const assistantData = {
+            phone: "01556 5578615",
+            location: "Ratzeburg (Herzogtum Lauenburg)",
+            services: [
+                "Krankenfahrten (alle Kassen)",
+                "Großraumtaxi (bis 8 Pers)",
+                "Flughafentransfer",
+                "Kurierfahrten",
+                "Rollstuhlbeförderung (sitzend)",
+                "Schülerbeförderung"
+            ],
+            tariffs: {
+                grundgebuehr: "5,00€",
+                km_1_4: "2,10€ / km",
+                ab_km_5: "2,00€ / km",
+                wartezeit: "35,00€ / Std",
+                grossraumzuschlag: "6,00€"
+            },
+            areas: ["Ratzeburg", "Mölln", "Lübeck", "Hamburg", "Schleswig-Holstein"],
+            booking: "Möglich über Anruf oder WhatsApp (für sofortige Fahrten) oder per Chat/Formular für Vorbestellungen."
+        };
 
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
@@ -474,13 +497,14 @@
             addTypingIndicator();
 
             try {
-                const response = await callGeminiAPI(message);
+                // Pass the business data for internal use if no API key is set
+                const response = await getAssistantResponse(message, assistantData); 
                 removeTypingIndicator();
                 addMessage(response, 'ai');
             } catch (error) {
                 removeTypingIndicator();
-                addMessage("Entschuldigung, ich habe gerade Verbindungsprobleme. Bitte rufen Sie uns direkt an: 01556 5578615", 'ai');
-                console.error(error);
+                addMessage("Entschuldigung, ich habe gerade Verbindungsprobleme. Bitte rufen Sie uns direkt an: " + assistantData.phone, 'ai');
+                console.error("API Error:", error);
             }
         }
 
@@ -494,8 +518,8 @@
                 <div class="${isUser ? 'chat-bubble-user' : 'chat-bubble-ai'} p-3 rounded-2xl text-sm leading-relaxed shadow-sm">
                     ${text}
                 </div>
-                <span class="text-[10px] text-gray-500 mt-1 ${isUser ? 'mr-2' : 'ml-2'}">Just now</span>
             `;
+            // Removed timestamp for cleaner simulation
             
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
@@ -522,21 +546,59 @@
             if (indicator) indicator.remove();
         }
 
-        async function callGeminiAPI(userMessage) {
-            if (!apiKey) {
-                return new Promise(resolve => setTimeout(() => resolve("Da kein API-Key konfiguriert ist, simuliere ich eine Antwort: Wir bieten Krankenfahrten, Großraumtaxi und mehr. Rufen Sie uns unter 01556 5578615 an!"), 1000));
+        // --- Simulated LLM Logic (Internal Q&A) ---
+        function getSimulatedResponse(message, data) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Check for booking/immediate need
+            if (lowerMessage.includes('sofort') || lowerMessage.includes('jetzt') || lowerMessage.includes('bestellen') || lowerMessage.includes('brauche')) {
+                 return `Für sofortige Taxibestellungen rufen Sie uns bitte direkt an: ${data.phone}. Wir sind Tag und Nacht für Sie bereit!`;
             }
 
+            // Check for services
+            if (lowerMessage.includes('leistung') || lowerMessage.includes('service') || lowerMessage.includes('angebot') || lowerMessage.includes('fahrt')) {
+                const serviceList = data.services.map(s => s.split('(')[0].trim()).join(', ');
+                return `Wir bieten unter anderem: ${serviceList}. Fragen Sie uns gerne nach Großraumtaxi, Flughafentransfer oder Krankenfahrten.`;
+            }
+            
+            // Check for tariffs/prices
+            if (lowerMessage.includes('preis') || lowerMessage.includes('tarif') || lowerMessage.includes('kostet') || lowerMessage.includes('gebühr')) {
+                return `Unsere Tarife (2025) beinhalten: Grundgebühr ${data.tariffs.grundgebuehr}. Der Kilometerpreis beginnt bei ${data.tariffs.km_1_4}. Wartezeit kostet ${data.tariffs.wartezeit}.`;
+            }
+
+            // Check for contact/phone
+            if (lowerMessage.includes('ruf') || lowerMessage.includes('nummer') || lowerMessage.includes('kontakt')) {
+                return `Sie erreichen uns 24/7 unter der Telefonnummer: ${data.phone}.`;
+            }
+
+            // Check for location/area
+            if (lowerMessage.includes('gebiet') || lowerMessage.includes('wohin') || lowerMessage.includes('ratzeburg') || lowerMessage.includes('moelln') || lowerMessage.includes('lübeck')) {
+                return `Unsere Servicegebiete sind Ratzeburg, Mölln, Lübeck, Hamburg und ganz Schleswig-Holstein.`;
+            }
+
+            // Default fallback
+            return `Ich bin der Assistent von Taxi Ratzeburg. Bitte fragen Sie mich nach unseren Leistungen, Tarifen oder Kontaktmöglichkeiten. Wir sind 24/7 verfügbar!`;
+        }
+
+        // --- Core Assistant Function ---
+        async function getAssistantResponse(userMessage, data) {
+            // 1. Internal Logic (Simulated LLM, if no API Key)
+            if (!apiKey) {
+                // Return a simulated response based on the page content after a short delay
+                return new Promise(resolve => setTimeout(() => resolve(getSimulatedResponse(userMessage, data)), 800));
+            }
+
+            // 2. External API Call (If API Key is available)
             const systemPrompt = `
                 Du bist der freundliche, professionelle KI-Assistent von Taxi Ratzeburg.
                 Deine Aufgabe ist es, Kundenfragen kurz und präzise zu beantworten.
                 
                 WICHTIGE DATEN:
-                - Telefon: 01556 5578615
-                - Standort: Ratzeburg (Herzogtum Lauenburg)
-                - Leistungen: Krankenfahrten (alle Kassen), Großraumtaxi (bis 8 Pers), Flughafentransfer, Kurierfahrten, Rollstuhlbeförderung, Schülerbeförderung.
-                - Tarife (2025): Grundgebühr 5,00€, Km 1-4: 2,10€, ab Km 5: 2,00€, Wartezeit 35€/Std, Großraumzuschlag 6,00€.
-                - Vorbestellungen: Möglich über Chat oder Formular.
+                - Telefon: ${data.phone}
+                - Standort: ${data.location}
+                - Leistungen: ${data.services.join(', ')}.
+                - Tarife (2025): Grundgebühr ${data.tariffs.grundgebuehr}, Km 1-4: ${data.tariffs.km_1_4}, ab Km 5: ${data.tariffs.ab_km_5}, Wartezeit ${data.tariffs.wartezeit}, Großraumzuschlag ${data.tariffs.grossraumzuschlag}.
+                - Servicegebiete: ${data.areas.join(', ')}.
                 
                 Verhalte dich höflich. Antworte auf Deutsch. Halte die Antworten kurz (max 3 Sätze), da es ein Chat ist.
                 Wenn jemand ein Taxi sofort braucht, sag ihnen sie sollen anrufen.
@@ -552,23 +614,30 @@
                     parts: [{ text: systemPrompt }]
                 }
             };
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await response.json();
             
-            if (data.error) {
-                throw new Error(data.error.message);
+            // Exponential Backoff for API call
+            for (let i = 0; i < 3; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const responseData = await response.json();
+                    
+                    if (responseData.error) {
+                        throw new Error(responseData.error.message);
+                    }
+                    
+                    return responseData.candidates[0].content.parts[0].text;
+
+                } catch (error) {
+                    if (i === 2) throw error; // Re-throw on last attempt
+                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000)); // Wait 1s, 2s
+                }
             }
-            
-            return data.candidates[0].content.parts[0].text;
         }
     </script>
 </body>
 </html>
-
-
